@@ -42,7 +42,10 @@ public class PersonPersistance extends DBPersistance
     
     public Object load(int ID)
     {
-	String stmt= "SELECT * FROM PERSON WHERE ID="+ ID;
+	String stmt= "SELECT FIRSTNAME, LASTNAME, BIRTHDAY, NAME,"+
+		     "MARTIALSTATUS, ADDRESS, EMAIL, TEL, WEBSITE "+
+		     "FROM PERSON P, COUNTRY C "+
+		     "WHERE P.NATIONALITY_ID = C.ID AND P.ID= "+ ID;
 	
 	SQLiteStatement sqlStmt= executeStatement(stmt);
 	
@@ -62,11 +65,11 @@ public class PersonPersistance extends DBPersistance
 		
 		int colIdx= 0;
 		
-		final int key= sqlStmt.columnInt(colIdx++);
+		final int key= ID;
 		final String firstName= sqlStmt.columnString(colIdx++);
 		final String lastName= sqlStmt.columnString(colIdx++);
 		final String birthday= sqlStmt.columnString(colIdx++);
-		final int nationality= sqlStmt.columnInt(colIdx++);
+		final String nationality= sqlStmt.columnString(colIdx++);
 		final boolean martialStatus= (sqlStmt.columnInt(colIdx++) == 1) ? true : false;
 		final String address= sqlStmt.columnString(colIdx++);
 		final String email= sqlStmt.columnString(colIdx++);

@@ -14,7 +14,7 @@ public class Test
 	PersonPersistance prsper= new PersonPersistance();
 	
 	//prsper.save(prs);
-	prs= (Person) prsper.load(2);
+	prs= (Person) prsper.load(1);
 	
 	HTMLResumeGenerator gen= new HTMLResumeGenerator(prs);
 	gen.createIndexHTML();

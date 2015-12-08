@@ -16,7 +16,7 @@ public class Person
 	m_firstName= "";
 	m_lastName= "";
 	m_birthDay= "";
-	m_nationality= 0;
+	m_nationality= "";
 	m_martialStatus= false;
 	m_address= "";
 	m_email= "";
@@ -30,7 +30,7 @@ public class Person
      * ================================================
      */
     public Person(String firstName, String lastName, String birthDay,
-	    int nationality, boolean martialStatus,
+	    String nationality, boolean martialStatus,
 	    String address, String email, String tel, String webSite)
     {
 	super();
@@ -77,11 +77,11 @@ public class Person
 	this.m_birthDay = m_birthDay;
     }
 
-    public int getNationality()
+    public String getNationality()
     {
 	return m_nationality;
     }
-    public void setNationality(int m_nationality)
+    public void setNationality(String m_nationality)
     {
 	this.m_nationality = m_nationality;
     }
@@ -151,7 +151,7 @@ public class Person
     private String m_firstName;
     private String m_lastName;
     private String m_birthDay;
-    private int m_nationality;
+    private String m_nationality;
     private boolean m_martialStatus;
     private String m_address;
     private String m_email;
