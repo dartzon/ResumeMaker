@@ -38,6 +38,23 @@ public class HTMLResumeGenerator
 	    htmlContent+= processPersonalHTML();
 	    htmlContent+= processPhotoHTML();
 	    
+	    /*
+	     * ========================================================================
+	     * Education Section.
+	     * ========================================================================
+	     */
+	    
+	    htmlContent+= "<div id=\"education\" class=\"Section\" style=\"clear:both\">";
+	    htmlContent+= "<div class=\"SectionTitle\">";
+	    htmlContent+= "<span>Formation</span>";
+	    htmlContent+= "</div>";
+	    
+	    htmlContent+= processEducationHTML();
+	    
+	    htmlContent+= "</div>";
+	    
+	    // ========================================================================
+	    
 	    htmlContent+= "</div> </body> </html>";
 	    
 	    File presentationFile= new File("data/HTMLResume/index.html");
@@ -172,6 +189,38 @@ public class HTMLResumeGenerator
 	while( (line= reader.readLine()) != null )
 	{
 	    line= line.replaceAll("\\$FACE\\$", "face.png");
+	    
+	    buffer.append(line);
+	}
+	
+	reader.close();
+
+	return (buffer);
+    }
+    
+    // ================================================================================
+    // ================================================================================
+    
+    private StringBuilder processEducationHTML() throws IOException
+    {
+	File presentationFile= new File("data/HTMLResume/HTMLParts/education.html");
+	
+	if(presentationFile.exists() == false)
+	{
+	    return (null);
+	}
+	
+	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
+	
+	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
+	
+	String line;
+	while( (line= reader.readLine()) != null )
+	{
+	    line= line.replaceAll("\\$INSTITUTION\\$", "OUTER HEAVEN");
+	    line= line.replaceAll("\\$EDUCATION-INTERVAL-DATES\\$", "1995-1997");
+	    line= line.replaceAll("\\$TITLE\\$", "FOX-HOUND Agent");
+	    line= line.replaceAll("\\$DETAIL\\$", "An undercover FOX-HOUND agent !");
 	    
 	    buffer.append(line);
 	}

@@ -42,7 +42,7 @@ public class PersonPersistance extends DBPersistance
     
     public Object load(int ID)
     {
-	String stmt= "SELECT FIRSTNAME, LASTNAME, BIRTHDAY, NAME,"+
+	final String stmt= "SELECT FIRSTNAME, LASTNAME, BIRTHDAY, NAME,"+
 		     "MARTIALSTATUS, ADDRESS, EMAIL, TEL, WEBSITE "+
 		     "FROM PERSON P, COUNTRY C "+
 		     "WHERE P.NATIONALITY_ID = C.ID AND P.ID= "+ ID;
@@ -60,12 +60,9 @@ public class PersonPersistance extends DBPersistance
 	{
 	    while( sqlStmt.step() == true )
 	    {
-		//System.out.println("Fetching data for person ID #"+ ID);
 		System.out.println(stmt);
 		
 		int colIdx= 0;
-		
-		final int key= ID;
 		final String firstName= sqlStmt.columnString(colIdx++);
 		final String lastName= sqlStmt.columnString(colIdx++);
 		final String birthday= sqlStmt.columnString(colIdx++);
