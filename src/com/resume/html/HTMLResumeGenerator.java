@@ -45,14 +45,27 @@ public class HTMLResumeGenerator
 	     */
 	    
 	    htmlContent+= "<div id=\"education\" class=\"Section\" style=\"clear:both\">";
-	    htmlContent+= "<div class=\"SectionTitle\">";
-	    htmlContent+= "<span>Formation</span>";
-	    htmlContent+= "</div>";
+	    htmlContent+= "<div class=\"SectionTitle\"> <span>Formation</span> </div>";
 	    
 	    htmlContent+= processEducationHTML();
 	    
 	    htmlContent+= "</div>";
 	    
+	    // ========================================================================
+	    
+	    /*
+	     * ========================================================================
+	     * Education Section.
+	     * ========================================================================
+	     */
+	    
+	    htmlContent+= "<div id=\"experience\" class=\"Section\" style=\"clear:both\">";            
+	    htmlContent+= "<div class=\"SectionTitle\"> <span>Exp&eacute;riences</span> </div>";
+	    
+	    htmlContent+= processExperienceHTML();
+	    
+	    htmlContent+= "</div>";
+            
 	    // ========================================================================
 	    
 	    htmlContent+= "</div> </body> </html>";
@@ -218,9 +231,45 @@ public class HTMLResumeGenerator
 	while( (line= reader.readLine()) != null )
 	{
 	    line= line.replaceAll("\\$INSTITUTION\\$", "OUTER HEAVEN");
+	    line= line.replaceAll("\\$ISCURRENT\\$", "CurrentAtTheDate");
 	    line= line.replaceAll("\\$EDUCATION-INTERVAL-DATES\\$", "1995-1997");
 	    line= line.replaceAll("\\$TITLE\\$", "FOX-HOUND Agent");
 	    line= line.replaceAll("\\$DETAIL\\$", "An undercover FOX-HOUND agent !");
+	    
+	    buffer.append(line);
+	}
+	
+	reader.close();
+
+	return (buffer);
+    }
+    
+    // ================================================================================
+    // ================================================================================
+    
+    private StringBuilder processExperienceHTML() throws IOException
+    {
+	File presentationFile= new File("data/HTMLResume/HTMLParts/experience.html");
+	
+	if(presentationFile.exists() == false)
+	{
+	    return (null);
+	}
+	
+	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
+	
+	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
+	
+	String line;
+	while( (line= reader.readLine()) != null )
+	{
+	    line= line.replaceAll("\\$COMPANY\\$", "FOX HOUND");
+	    line= line.replaceAll("\\$ISCURRENT\\$", "CurrentAtTheDate");
+	    line= line.replaceAll("\\$INTERVAL-DATES\\$", "1998-2016");//
+	    line= line.replaceAll("\\$NB-WEEKS\\$", "95");
+	    line= line.replaceAll("\\$COMPANY-WEBSITE\\$", "www.snakes.com");
+	    line= line.replaceAll("\\$TITLE\\$", "Solid Snake Special agent");
+	    line= line.replaceAll("\\$DETAIL\\$", "FOX agent, Philantropy founder and CEO");
 	    
 	    buffer.append(line);
 	}
