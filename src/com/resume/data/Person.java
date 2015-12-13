@@ -13,6 +13,7 @@ public class Person
      */
     public Person()
     {
+	m_ID= 0;
 	m_firstName= "";
 	m_lastName= "";
 	m_birthDay= "";
@@ -29,11 +30,11 @@ public class Person
      * Class initialization constructor.
      * ================================================
      */
-    public Person(String firstName, String lastName, String birthDay,
+    public Person(int ID, String firstName, String lastName, String birthDay,
 	    String nationality, boolean martialStatus,
 	    String address, String email, String tel, String webSite)
     {
-	super();
+	this.m_ID= ID;
 	this.m_firstName = firstName;
 	this.m_lastName = lastName;
 	this.m_birthDay = birthDay;
@@ -49,7 +50,16 @@ public class Person
      * ================================================
      * Class accessors.
      * ================================================
-     */    
+     */
+    public int getID()
+    {
+	return m_ID;
+    }
+    public void setID(int ID)
+    {
+	m_ID = ID;
+    }
+    
     public String getFirstName()
     {
 	return m_firstName;
@@ -133,12 +143,12 @@ public class Person
     
     /**
      * ================================================
-     * toString methode.
+     * toString method.
      * ================================================
      */
     public String toString()
     {
-	return ("Person [m_firstName=" + m_firstName + ", m_lastName=" + m_lastName + ", m_birthDay=" + m_birthDay
+	return ("Person [m_ID=" + m_ID + ", m_firstName=" + m_firstName + ", m_lastName=" + m_lastName + ", m_birthDay=" + m_birthDay
 		+ ", m_nationality=" + m_nationality + ", m_martialStatus=" + m_martialStatus + ", m_address="
 		+ m_address + ", m_email=" + m_email + ", m_tel=" + m_tel + ", m_webSite=" + m_webSite + "]");
     }
@@ -148,6 +158,7 @@ public class Person
      * Class members.
      * ================================================
      */
+    private int m_ID;
     private String m_firstName;
     private String m_lastName;
     private String m_birthDay;

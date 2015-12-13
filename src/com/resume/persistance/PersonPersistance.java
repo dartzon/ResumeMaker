@@ -6,7 +6,7 @@ import com.resume.data.Person;
 
 public class PersonPersistance extends DBPersistance
 {    
-    public boolean save(Object obj)
+    public boolean save(Object obj, Object ... args)
     {
 	Person person= (Person) obj;
 	
@@ -73,7 +73,7 @@ public class PersonPersistance extends DBPersistance
 		final String tel= sqlStmt.columnString(colIdx++);
 		final String webSite= sqlStmt.columnString(colIdx++);
 		
-		person= new Person(firstName, lastName, birthday, nationality, martialStatus,
+		person= new Person(ID, firstName, lastName, birthday, nationality, martialStatus,
 			address, email, tel, webSite);
 	    }
 	}

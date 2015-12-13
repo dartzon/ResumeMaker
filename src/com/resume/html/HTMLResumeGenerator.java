@@ -6,6 +6,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
+
+import com.resume.data.Education;
 import com.resume.data.Person;
 
 public class HTMLResumeGenerator
@@ -221,22 +224,33 @@ public class HTMLResumeGenerator
 	}
 	
 	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
-	
 	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
-	
 	String line;
-	while( (line= reader.readLine()) != null )
+	while((line = reader.readLine()) != null)
 	{
-	    line= line.replaceAll("\\$INSTITUTION\\$", "OUTER HEAVEN");
-	    line= line.replaceAll("\\$ISCURRENT\\$", "CurrentAtTheDate");
-	    line= line.replaceAll("\\$EDUCATION-INTERVAL-DATES\\$", "1995-1997");
-	    line= line.replaceAll("\\$TITLE\\$", "FOX-HOUND Agent");
-	    line= line.replaceAll("\\$DETAIL\\$", "An undercover FOX-HOUND agent !");
-	    
 	    buffer.append(line);
 	}
 	
 	reader.close();
+		
+	/*for(int idx= 0; idx< m_educations.size(); ++idx)
+	{
+	    Education edu= m_educations.elementAt(idx);
+	    final String current= (edu.isCurrent() == true) ? "CurrentAtTheDate" : "";
+	    final String date_interval= edu.getStartYear() + "-" + edu.getEndYear();
+	    
+	    String line;
+	    while((line = reader.readLine()) != null)
+	    {
+		line = line.replaceAll("\\$INSTITUTION\\$", edu.getInstitutionName());
+		line = line.replaceAll("\\$ISCURRENT\\$", current);
+		line = line.replaceAll("\\$EDUCATION-INTERVAL-DATES\\$", date_interval);
+		line = line.replaceAll("\\$TITLE\\$", edu.getTitle());
+		line = line.replaceAll("\\$DETAIL\\$", edu.getDescription());
+
+		buffer.append(line);
+	    }
+	}*/
 
 	return (buffer);
     }
@@ -280,4 +294,5 @@ public class HTMLResumeGenerator
     // ================================================================================
     
     private Person m_person;
+    private Vector<Education> m_educations;
 }

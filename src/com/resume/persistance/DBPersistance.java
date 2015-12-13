@@ -26,7 +26,7 @@ public abstract class DBPersistance
 	return (sqlStmt);
     }
     
-    public abstract boolean save(Object obj);
+    public abstract boolean save(Object obj, Object ... args);
     public abstract Object load(int ID);
     
     protected SQLiteManager m_SQLMgr;
