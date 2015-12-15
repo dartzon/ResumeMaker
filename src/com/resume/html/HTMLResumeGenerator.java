@@ -9,13 +9,16 @@ import java.io.IOException;
 import java.util.Vector;
 
 import com.resume.data.Education;
+import com.resume.data.Experience;
 import com.resume.data.Person;
 
 public class HTMLResumeGenerator
 {
-    public HTMLResumeGenerator(Person person)
+    public HTMLResumeGenerator(Person person, Vector<Education> educations, Vector<Experience> experiences)
     {
 	m_person= person;
+	m_educations= educations;
+	m_experiences= experiences;
     }
     
     // ================================================================================
@@ -47,7 +50,11 @@ public class HTMLResumeGenerator
 	    htmlContent+= "<div id=\"education\" class=\"Section\" style=\"clear:both\">";
 	    htmlContent+= "<div class=\"SectionTitle\"> <span>Formation</span> </div>";
 	    
-	    htmlContent+= processEducationHTML();
+	    final StringBuilder[] educationOutput= processEducationHTML();
+	    for(int idx= 0; idx< educationOutput.length; ++idx)
+	    {
+		htmlContent+= educationOutput[idx];
+	    }
 	    
 	    htmlContent+= "</div>";
 	    
@@ -62,7 +69,11 @@ public class HTMLResumeGenerator
 	    htmlContent+= "<div id=\"experience\" class=\"Section\" style=\"clear:both\">";            
 	    htmlContent+= "<div class=\"SectionTitle\"> <span>Exp&eacute;riences</span> </div>";
 	    
-	    htmlContent+= processExperienceHTML();
+	    final StringBuilder[] experienceOutput= processExperienceHTML();
+	    for(int idx= 0; idx< experienceOutput.length; ++idx)
+	    {
+		htmlContent+= experienceOutput[idx];
+	    }
 	    
 	    htmlContent+= "</div>";
             
@@ -214,7 +225,7 @@ public class HTMLResumeGenerator
     // ================================================================================
     // ================================================================================
     
-    private StringBuilder processEducationHTML() throws IOException
+    private StringBuilder[] processEducationHTML() throws IOException
     {
 	File presentationFile= new File("data/HTMLResume/HTMLParts/education.html");
 	
@@ -224,41 +235,41 @@ public class HTMLResumeGenerator
 	}
 	
 	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
-	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
+	StringBuilder originalBuffer= new StringBuilder((int) presentationFile.length());
 	String line;
 	while((line = reader.readLine()) != null)
 	{
-	    buffer.append(line);
+	    originalBuffer.append(line);
 	}
 	
 	reader.close();
-		
-	/*for(int idx= 0; idx< m_educations.size(); ++idx)
+	
+	final int educationsCount= m_educations.size();
+	StringBuilder output[]= new StringBuilder[educationsCount];
+	for(int idx= 0; idx< educationsCount; ++idx)
 	{
 	    Education edu= m_educations.elementAt(idx);
 	    final String current= (edu.isCurrent() == true) ? "CurrentAtTheDate" : "";
 	    final String date_interval= edu.getStartYear() + "-" + edu.getEndYear();
+
+	    String tmpString= originalBuffer.toString();
+	    tmpString = tmpString.replaceAll("\\$INSTITUTION\\$", edu.getInstitutionName());
+	    tmpString = tmpString.replaceAll("\\$ISCURRENT\\$", current);
+	    tmpString = tmpString.replaceAll("\\$EDUCATION-INTERVAL-DATES\\$", date_interval);
+	    tmpString = tmpString.replaceAll("\\$TITLE\\$", edu.getTitle());
+	    tmpString = tmpString.replaceAll("\\$DETAIL\\$", edu.getDescription());
 	    
-	    String line;
-	    while((line = reader.readLine()) != null)
-	    {
-		line = line.replaceAll("\\$INSTITUTION\\$", edu.getInstitutionName());
-		line = line.replaceAll("\\$ISCURRENT\\$", current);
-		line = line.replaceAll("\\$EDUCATION-INTERVAL-DATES\\$", date_interval);
-		line = line.replaceAll("\\$TITLE\\$", edu.getTitle());
-		line = line.replaceAll("\\$DETAIL\\$", edu.getDescription());
+	    output[idx]= new StringBuilder();
+	    output[idx].append(tmpString);
+	}
 
-		buffer.append(line);
-	    }
-	}*/
-
-	return (buffer);
+	return (output);
     }
     
     // ================================================================================
     // ================================================================================
     
-    private StringBuilder processExperienceHTML() throws IOException
+    private StringBuilder[] processExperienceHTML() throws IOException
     {
 	File presentationFile= new File("data/HTMLResume/HTMLParts/experience.html");
 	
@@ -268,26 +279,38 @@ public class HTMLResumeGenerator
 	}
 	
 	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
-	
-	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
-	
+	StringBuilder originalBuffer= new StringBuilder((int) presentationFile.length());
 	String line;
-	while( (line= reader.readLine()) != null )
+	while((line = reader.readLine()) != null)
 	{
-	    line= line.replaceAll("\\$COMPANY\\$", "FOX HOUND");
-	    line= line.replaceAll("\\$ISCURRENT\\$", "CurrentAtTheDate");
-	    line= line.replaceAll("\\$INTERVAL-DATES\\$", "1998-2016");//
-	    line= line.replaceAll("\\$NB-WEEKS\\$", "95");
-	    line= line.replaceAll("\\$COMPANY-WEBSITE\\$", "www.snakes.com");
-	    line= line.replaceAll("\\$TITLE\\$", "Solid Snake Special agent");
-	    line= line.replaceAll("\\$DETAIL\\$", "FOX agent, Philantropy founder and CEO");
-	    
-	    buffer.append(line);
+	    originalBuffer.append(line);
 	}
 	
 	reader.close();
+	
+	final int experiencesCount= m_experiences.size();
+	StringBuilder output[]= new StringBuilder[experiencesCount];
+	for(int idx= 0; idx< experiencesCount; ++idx)
+	{
+	    Experience exp= m_experiences.elementAt(idx);
+	    final String current= (exp.isCurrent() == true) ? "CurrentAtTheDate" : "";
+	    final String date_interval= exp.getDateStart() + "-" + exp.getDateEnd();
+	    final String weekCount= (exp.getWeekCount() > 0) ? exp.getWeekCount() + " semaines" : "";
 
-	return (buffer);
+	    String tmpString= originalBuffer.toString();
+	    tmpString = tmpString.replaceAll("\\$COMPANY\\$", exp.getcompany());
+	    tmpString = tmpString.replaceAll("\\$INTERVAL-DATES\\$", date_interval);
+	    tmpString = tmpString.replaceAll("\\$NB-WEEKS\\$", weekCount);
+	    tmpString = tmpString.replaceAll("\\$ISCURRENT\\$", current);
+	    tmpString = tmpString.replaceAll("\\$COMPANY-WEBSITE\\$", exp.getCompanyWebSite());
+	    tmpString = tmpString.replaceAll("\\$TITLE\\$", exp.getTitle());
+	    tmpString = tmpString.replaceAll("\\$DETAIL\\$", exp.getDetail());
+	    
+	    output[idx]= new StringBuilder();
+	    output[idx].append(tmpString);
+	}
+
+	return (output);
     }
     
     // ================================================================================
@@ -295,4 +318,5 @@ public class HTMLResumeGenerator
     
     private Person m_person;
     private Vector<Education> m_educations;
+    private Vector<Experience> m_experiences;
 }

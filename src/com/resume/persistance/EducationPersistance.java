@@ -15,10 +15,10 @@ public class EducationPersistance extends DBPersistance
 	Person pers= (Person) args[0];
 	
 	String stmt= "INSERT INTO EDUCATION (INSTITUTION, INTERVAL_DATE_START, INTERVAL_DATE_END, "
-		+ "TITLE, IS_CURRENT, PERSON_ID) ";
-	stmt+= "VALUES('%s', '%d', '%d', '%s', '%d', '%d', '%d')";
+		+ "TITLE, DETAIL, IS_CURRENT, PERSON_ID) ";
+	stmt+= "VALUES('%s', '%d', '%d', '%s', '%s', '%d', '%d', '%d')";
 	stmt= String.format(stmt, educ.getInstitutionName(), educ.getStartYear(), educ.getEndYear(), educ.getTitle(),
-		(educ.isCurrent() == true) ? 1 : 0, pers.getID());
+		educ.getDescription(), (educ.isCurrent() == true) ? 1 : 0, pers.getID());
 	
 	SQLiteStatement sqlStmt= executeStatement(stmt);
 	
@@ -48,7 +48,9 @@ public class EducationPersistance extends DBPersistance
 	final String stmt= "SELECT INSTITUTION, INTERVAL_DATE_START, INTERVAL_DATE_END,"+
 		     "TITLE, DETAIL, IS_CURRENT "+
 		     "FROM PERSON P, EDUCATION E "+
-		     "WHERE P.ID = E.ID AND P.ID= "+ ID;
+		     "WHERE P.ID = E.PERSON_ID AND P.ID= "+ ID;
+	
+	System.out.println(stmt);
 
 	SQLiteStatement sqlStmt= executeStatement(stmt);
 	
@@ -63,8 +65,6 @@ public class EducationPersistance extends DBPersistance
 	{
 	    while( sqlStmt.step() == true )
 	    {
-		System.out.println(stmt);
-		
 		int colIdx= 0;
 		String institutionName= sqlStmt.columnString(colIdx++);
 		int startYear= sqlStmt.columnInt(colIdx++);

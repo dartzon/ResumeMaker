@@ -47,6 +47,8 @@ public class PersonPersistance extends DBPersistance
 		     "FROM PERSON P, COUNTRY C "+
 		     "WHERE P.NATIONALITY_ID = C.ID AND P.ID= "+ ID;
 	
+	System.out.println(stmt);
+	
 	SQLiteStatement sqlStmt= executeStatement(stmt);
 	
 	if(sqlStmt == null)
@@ -60,8 +62,6 @@ public class PersonPersistance extends DBPersistance
 	{
 	    while( sqlStmt.step() == true )
 	    {
-		System.out.println(stmt);
-		
 		int colIdx= 0;
 		final String firstName= sqlStmt.columnString(colIdx++);
 		final String lastName= sqlStmt.columnString(colIdx++);
