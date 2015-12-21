@@ -6,6 +6,7 @@ import com.resume.data.Education;
 import com.resume.data.Experience;
 import com.resume.data.Person;
 import com.resume.html.HTMLResumeGenerator;
+import com.resume.html.ResumeLang;
 import com.resume.persistance.EducationPersistance;
 import com.resume.persistance.ExperiencePersistance;
 import com.resume.persistance.PersonPersistance;
@@ -13,6 +14,7 @@ import com.resume.persistance.SQLiteManager;
 
 public class Test
 {
+    @SuppressWarnings("unchecked")
     public static void main(String[] args)
     {
 	PersonPersistance prsper= new PersonPersistance();
@@ -24,7 +26,7 @@ public class Test
 	ExperiencePersistance expper= new ExperiencePersistance();
 	Vector<Experience> experiences= (Vector<Experience>) expper.load( prs.getID() );
 	
-	HTMLResumeGenerator gen= new HTMLResumeGenerator(prs, educations, experiences);
+	HTMLResumeGenerator gen= new HTMLResumeGenerator(ResumeLang.RL_US, prs, educations, experiences);
 	gen.createIndexHTML();
 	
 	SQLiteManager.release();

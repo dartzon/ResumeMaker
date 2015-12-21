@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import com.resume.data.Education;
@@ -13,9 +15,21 @@ import com.resume.data.Experience;
 import com.resume.data.Person;
 
 public class HTMLResumeGenerator
-{
+{   
     public HTMLResumeGenerator(Person person, Vector<Education> educations, Vector<Experience> experiences)
     {
+	m_ResumeLang= ResumeLang.RL_US;
+	
+	m_person= person;
+	m_educations= educations;
+	m_experiences= experiences;
+    }
+    
+    public HTMLResumeGenerator(ResumeLang lang,
+	    Person person, Vector<Education> educations, Vector<Experience> experiences)
+    {
+	m_ResumeLang= lang;
+	
 	m_person= person;
 	m_educations= educations;
 	m_experiences= experiences;
@@ -28,6 +42,22 @@ public class HTMLResumeGenerator
     {
 	try
 	{
+	    /*
+	     * ========================================================================
+	     * i18n setup.
+	     * ========================================================================
+	     */
+	    
+	    switch(m_ResumeLang)
+	    {
+	    case RL_US : m_i18nLocale= new Locale("us", "US"); break;
+	    case RL_FR : m_i18nLocale= new Locale("fr", "FR"); break;
+	    }
+
+	    m_i18nRsc= ResourceBundle.getBundle("resume", m_i18nLocale);
+	    
+	    // ========================================================================
+	    
 	    String htmlContent= "<!DOCTYPE html> <html>";
 	    
 	    htmlContent+= processTitleHTML();
@@ -170,19 +200,46 @@ public class HTMLResumeGenerator
 	
 	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
 	
-	final String martialStatus= (m_person.getMartialStatus() == true) ? "Mari&eacute;" : "C&eacute;libataire";
+	final String i18nNationality= m_i18nRsc.getString("nationality_"+
+		m_person.getNationalityID() +"_"+ m_person.getGender());
+	
+	String i18nMartialStatus= (m_person.getMartialStatus() == true) ?
+		m_i18nRsc.getString("married") : m_i18nRsc.getString("single");
+		
+	if( (m_ResumeLang == ResumeLang.RL_FR) &&
+	    (m_person.getGender() == 2)  && (m_person.getMartialStatus() == true))
+	{
+	    // In the french language, the feminine adjectives take an 'e' at the end.
+	    i18nMartialStatus+= "e";
+	}
 	
 	String line;
 	while( (line= reader.readLine()) != null )
 	{
+	    line= line.replaceAll("\\$I18NPRESENTATION\\$", m_i18nRsc.getString("presentation"));
+	    
+	    line= line.replaceAll("\\$I18NCOMPLETENAME\\$", m_i18nRsc.getString("complete_name"));
 	    line= line.replaceAll("\\$FIRSTNAME\\$", m_person.getFirstName());
 	    line= line.replaceAll("\\$LASTNAME\\$", m_person.getLastName());
-	    line= line.replaceAll("\\$BIRTHDAY\\$", m_person.getBirthDay());
-	    line= line.replaceAll("\\$NATIONALITY\\$", String.valueOf( m_person.getNationality() ) );
-	    line= line.replaceAll("\\$MARTIALSTATUS\\$", martialStatus);
+	    
+	    line= line.replaceAll("\\$I18NBIRTHDATE\\$", m_i18nRsc.getString("birth_date"));
+	    line= line.replaceAll("\\$BIRTHDATE\\$", m_person.getBirthDay());
+	    
+	    line= line.replaceAll("\\$I18NNATIONALITY\\$", m_i18nRsc.getString("nationality"));
+	    line= line.replaceAll("\\$NATIONALITY_ID\\$", String.valueOf( m_person.getNationalityID() ) );
+	    line= line.replaceAll("\\$NATIONALITY\\$", i18nNationality);
+	    
+	    line= line.replaceAll("\\$I18NCIVILSTATUS\\$", m_i18nRsc.getString("civil_status"));
+	    line= line.replaceAll("\\$MARTIALSTATUS\\$", i18nMartialStatus);
+	    
+	    line= line.replaceAll("\\$I18NADDRESS\\$", m_i18nRsc.getString("address"));
 	    line= line.replaceAll("\\$ADDRESS\\$", m_person.getAddress());
+	    
 	    line= line.replaceAll("\\$EMAIL\\$", m_person.getEmail());
+	    
+	    line= line.replaceAll("\\$I18NPHONE\\$", m_i18nRsc.getString("phone"));
 	    line= line.replaceAll("\\$TEL\\$", m_person.getTel());
+	    
 	    line= line.replaceAll("\\$WEBSITE\\$", m_person.getWebSite());
 	    
 	    buffer.append(line);
@@ -319,4 +376,9 @@ public class HTMLResumeGenerator
     private Person m_person;
     private Vector<Education> m_educations;
     private Vector<Experience> m_experiences;
+    
+    // i18n Management.
+    ResumeLang m_ResumeLang;
+    Locale m_i18nLocale;
+    ResourceBundle m_i18nRsc;
 }

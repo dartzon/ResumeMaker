@@ -10,12 +10,13 @@ public class PersonPersistance extends DBPersistance
     {
 	Person person= (Person) obj;
 	
-	String stmt= "INSERT INTO PERSON (FIRSTNAME, LASTNAME, BIRTHDAY, NATIONALITY_ID, MARTIALSTATUS, "
+	String stmt= "INSERT INTO PERSON (FIRSTNAME, LASTNAME, BIRTHDAY,"
+		+ "GENDER, NATIONALITY_ID, MARTIALSTATUS, "
 		+ "ADDRESS, EMAIL, TEL, WEBSITE) ";
 	stmt+= "VALUES('%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s')";
-	stmt= String.format(stmt, person.getFirstName(), person.getLastName(), person.getBirthDay(), 118,
-		(person.getMartialStatus() == true) ? 1 : 0, person.getAddress(), person.getEmail(),
-			person.getTel(), person.getWebSite());
+	stmt= String.format(stmt, person.getFirstName(), person.getLastName(), person.getBirthDay(),
+		person.getGender(), person.getNationalityID(), (person.getMartialStatus() == true) ? 1 : 0,
+		person.getAddress(), person.getEmail(), person.getTel(), person.getWebSite());
 	
 	SQLiteStatement sqlStmt= executeStatement(stmt);
 	
@@ -42,8 +43,8 @@ public class PersonPersistance extends DBPersistance
     
     public Object load(int ID)
     {
-	final String stmt= "SELECT FIRSTNAME, LASTNAME, BIRTHDAY, NAME,"+
-		     "MARTIALSTATUS, ADDRESS, EMAIL, TEL, WEBSITE "+
+	final String stmt= "SELECT FIRSTNAME, LASTNAME, BIRTHDAY, C.ID, C.NAME,"+
+		     "MARTIALSTATUS, ADDRESS, EMAIL, TEL, WEBSITE, GENDER "+
 		     "FROM PERSON P, COUNTRY C "+
 		     "WHERE P.NATIONALITY_ID = C.ID AND P.ID= "+ ID;
 	
@@ -66,15 +67,17 @@ public class PersonPersistance extends DBPersistance
 		final String firstName= sqlStmt.columnString(colIdx++);
 		final String lastName= sqlStmt.columnString(colIdx++);
 		final String birthday= sqlStmt.columnString(colIdx++);
+		final int nationalityID= sqlStmt.columnInt(colIdx++);
 		final String nationality= sqlStmt.columnString(colIdx++);
 		final boolean martialStatus= (sqlStmt.columnInt(colIdx++) == 1) ? true : false;
 		final String address= sqlStmt.columnString(colIdx++);
 		final String email= sqlStmt.columnString(colIdx++);
 		final String tel= sqlStmt.columnString(colIdx++);
 		final String webSite= sqlStmt.columnString(colIdx++);
+		final int gender= sqlStmt.columnInt(colIdx++);
 		
-		person= new Person(ID, firstName, lastName, birthday, nationality, martialStatus,
-			address, email, tel, webSite);
+		person= new Person(ID, firstName, lastName, birthday, gender, nationalityID, nationality,
+			martialStatus, address, email, tel, webSite);
 	    }
 	}
 	catch (SQLiteException e)

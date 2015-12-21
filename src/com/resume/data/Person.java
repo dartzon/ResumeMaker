@@ -17,6 +17,8 @@ public class Person
 	m_firstName= "";
 	m_lastName= "";
 	m_birthDay= "";
+	m_gender= 1;
+	m_nationalityID= 0;
 	m_nationality= "";
 	m_martialStatus= false;
 	m_address= "";
@@ -31,13 +33,15 @@ public class Person
      * ================================================
      */
     public Person(int ID, String firstName, String lastName, String birthDay,
-	    String nationality, boolean martialStatus,
+	    int gender, int nationalityID, String nationality, boolean martialStatus,
 	    String address, String email, String tel, String webSite)
     {
 	this.m_ID= ID;
 	this.m_firstName = firstName;
 	this.m_lastName = lastName;
 	this.m_birthDay = birthDay;
+	this.m_gender = gender;
+	this.m_nationalityID= nationalityID;
 	this.m_nationality = nationality;
 	this.m_martialStatus = martialStatus;
 	this.m_address = address;
@@ -85,6 +89,24 @@ public class Person
     public void setBirthDay(String m_birthDay)
     {
 	this.m_birthDay = m_birthDay;
+    }
+    
+    public int getGender()
+    {
+	return m_gender;
+    }
+    public void setGender(int gender)
+    {
+	this.m_gender = gender;
+    }
+    
+    public int getNationalityID()
+    {
+	return m_nationalityID;
+    }
+    public void setNationalityID(int nationalityID)
+    {
+	m_nationalityID= nationalityID;
     }
 
     public String getNationality()
@@ -146,11 +168,16 @@ public class Person
      * toString method.
      * ================================================
      */
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
     public String toString()
     {
-	return ("Person [m_ID=" + m_ID + ", m_firstName=" + m_firstName + ", m_lastName=" + m_lastName + ", m_birthDay=" + m_birthDay
-		+ ", m_nationality=" + m_nationality + ", m_martialStatus=" + m_martialStatus + ", m_address="
-		+ m_address + ", m_email=" + m_email + ", m_tel=" + m_tel + ", m_webSite=" + m_webSite + "]");
+	return "Person [m_ID=" + m_ID + ", m_firstName=" + m_firstName + ", m_lastName=" + m_lastName +
+		", m_birthDay=" + m_birthDay + ", m_gender=" + m_gender + ", m_nationality=" + m_nationality +
+		", m_martialStatus=" + m_martialStatus + ", m_address=" + m_address + ", m_email=" + m_email +
+		", m_tel=" + m_tel + ", m_webSite=" + m_webSite + "]";
     }
 
     /**
@@ -162,6 +189,8 @@ public class Person
     private String m_firstName;
     private String m_lastName;
     private String m_birthDay;
+    private int m_gender; // 1 = Male / 2 = Female
+    private int m_nationalityID;
     private String m_nationality;
     private boolean m_martialStatus;
     private String m_address;
