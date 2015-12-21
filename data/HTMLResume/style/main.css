@@ -103,6 +103,8 @@ div#main_content div.Section div.SectionTitle
     background-color: rgb(55, 53, 53);
     color: #ffffff;
     
+    text-transform: capitalize;
+    
     font-size: 1.5em;
     font-weight: lighter;
     
