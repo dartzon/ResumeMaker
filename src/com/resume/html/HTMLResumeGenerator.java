@@ -12,27 +12,33 @@ import java.util.Vector;
 
 import com.resume.data.Education;
 import com.resume.data.Experience;
+import com.resume.data.Misc;
 import com.resume.data.Person;
 
 public class HTMLResumeGenerator
 {   
-    public HTMLResumeGenerator(Person person, Vector<Education> educations, Vector<Experience> experiences)
+    public HTMLResumeGenerator(Person person,
+	    Vector<Education> educations, Vector<Experience> experiences,
+	    Misc misc)
     {
 	m_ResumeLang= ResumeLang.RL_US;
 	
 	m_person= person;
 	m_educations= educations;
 	m_experiences= experiences;
+	m_misc= misc;
     }
     
     public HTMLResumeGenerator(ResumeLang lang,
-	    Person person, Vector<Education> educations, Vector<Experience> experiences)
+	    Person person, Vector<Education> educations, Vector<Experience> experiences,
+	    Misc misc)
     {
 	m_ResumeLang= lang;
 	
 	m_person= person;
 	m_educations= educations;
 	m_experiences= experiences;
+	m_misc= misc;
     }
     
     // ================================================================================
@@ -78,7 +84,8 @@ public class HTMLResumeGenerator
 	     */
 	    
 	    htmlContent+= "<div id=\"education\" class=\"Section\" style=\"clear:both\">";
-	    htmlContent+= "<div class=\"SectionTitle\"> <span>Formation</span> </div>";
+	    htmlContent+= "<div class=\"SectionTitle\"> <span>"+ m_i18nRsc.getString("education")+
+		    	  "</span> </div>";
 	    
 	    final StringBuilder[] educationOutput= processEducationHTML();
 	    for(int idx= 0; idx< educationOutput.length; ++idx)
@@ -97,7 +104,8 @@ public class HTMLResumeGenerator
 	     */
 	    
 	    htmlContent+= "<div id=\"experience\" class=\"Section\" style=\"clear:both\">";            
-	    htmlContent+= "<div class=\"SectionTitle\"> <span>Exp&eacute;riences</span> </div>";
+	    htmlContent+= "<div class=\"SectionTitle\"> <span>"+ m_i18nRsc.getString("experience")+
+		    	  "</span> </div>";
 	    
 	    final StringBuilder[] experienceOutput= processExperienceHTML();
 	    for(int idx= 0; idx< experienceOutput.length; ++idx)
@@ -107,6 +115,15 @@ public class HTMLResumeGenerator
 	    
 	    htmlContent+= "</div>";
             
+	    // ========================================================================
+	    
+	    /*
+	     * ========================================================================
+	     * Miscellaneous Section.
+	     * ========================================================================
+	     */
+	    htmlContent+= processMiscHTML();
+	    
 	    // ========================================================================
 	    
 	    htmlContent+= "</div> </body> </html>";
@@ -350,15 +367,44 @@ public class HTMLResumeGenerator
 	for(int idx= 0; idx< experiencesCount; ++idx)
 	{
 	    Experience exp= m_experiences.elementAt(idx);
-	    final String current= (exp.isCurrent() == true) ? "CurrentAtTheDate" : "";
-	    final String date_interval= exp.getDateStart() + "-" + exp.getDateEnd();
-	    final String weekCount= (exp.getWeekCount() > 0) ? exp.getWeekCount() + " semaines" : "";
+	    final String isCurrent= (exp.isCurrent() == true) ? "CurrentAtTheDate" : "";
+	    
+	    //////////////////////////////////////////
+	    // Date interval.
+	    final String dateStartMY[]= exp.getDateStart().split("-");
+	    final int dateStartM= Integer.parseInt( dateStartMY[0] );
+	    String dateStart= m_i18nRsc.getString("month"+ dateStartM);
+
+	    String dateEnd;	    
+	    if(exp.getDateEnd().compareTo("!") == 0)
+	    {
+		dateStart+= " " + dateStartMY[1];
+		dateEnd= m_i18nRsc.getString("today");
+	    }
+	    else
+	    {
+		final String dateEndMY[]= exp.getDateEnd().split("-");
+		final int dateEndM= Integer.parseInt( dateEndMY[0] );
+		dateEnd= m_i18nRsc.getString("month"+ dateEndM) + " " + dateEndMY[1];
+		
+		if(dateStartMY[1].compareTo(dateEndMY[1]) != 0)
+		{
+		    dateStart+= " " + dateStartMY[1];
+		}
+	    }
+	    
+	    final String experiencePeriod= dateStart + " - " + dateEnd;
+	    
+	    //////////////////////////////////////////
+	    
+	    final String i18nWeek= m_i18nRsc.getString("week") + ( (exp.getWeekCount() > 0) ? "s" : "" );
+	    final String weekCount= (exp.getWeekCount() > 0) ? exp.getWeekCount() + (" " + i18nWeek) : "";
 
 	    String tmpString= originalBuffer.toString();
 	    tmpString = tmpString.replaceAll("\\$COMPANY\\$", exp.getcompany());
-	    tmpString = tmpString.replaceAll("\\$INTERVAL-DATES\\$", date_interval);
+	    tmpString = tmpString.replaceAll("\\$INTERVAL-DATES\\$", experiencePeriod);
 	    tmpString = tmpString.replaceAll("\\$NB-WEEKS\\$", weekCount);
-	    tmpString = tmpString.replaceAll("\\$ISCURRENT\\$", current);
+	    tmpString = tmpString.replaceAll("\\$ISCURRENT\\$", isCurrent);
 	    tmpString = tmpString.replaceAll("\\$COMPANY-WEBSITE\\$", exp.getCompanyWebSite());
 	    tmpString = tmpString.replaceAll("\\$TITLE\\$", exp.getTitle());
 	    tmpString = tmpString.replaceAll("\\$DETAIL\\$", exp.getDetail());
@@ -373,9 +419,42 @@ public class HTMLResumeGenerator
     // ================================================================================
     // ================================================================================
     
+    private StringBuilder processMiscHTML() throws IOException
+    {
+	File presentationFile= new File("data/HTMLResume/HTMLParts/misc.html");
+	
+	if(presentationFile.exists() == false)
+	{
+	    return (null);
+	}
+	
+	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
+	
+	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
+	
+	final String i18nMisc= m_i18nRsc.getString("misc");
+	
+	String line;
+	while( (line= reader.readLine()) != null )
+	{
+	    line= line.replaceAll("\\$I18NMISC\\$", i18nMisc);
+	    line= line.replaceAll("\\$HOBBIES\\$", m_misc.getHobbies());
+	    
+	    buffer.append(line);
+	}
+	
+	reader.close();
+
+	return (buffer);
+    }
+    
+    // ================================================================================
+    // ================================================================================
+    
     private Person m_person;
     private Vector<Education> m_educations;
     private Vector<Experience> m_experiences;
+    private Misc m_misc;
     
     // i18n Management.
     ResumeLang m_ResumeLang;
