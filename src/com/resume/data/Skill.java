@@ -1,15 +1,19 @@
 package com.resume.data;
 
-public class Misc
+import java.util.Vector;
+
+import com.resume.data.skills.Lang;
+
+public class Skill
 {
     /**
      * ================================================
      * Default constructor.
      * ================================================
      */
-    public Misc()
+    public Skill()
     {
-	m_hobbies= "";
+	m_langs= new Vector<Lang>();
 	m_linkedPerson= null;
     }
 
@@ -18,9 +22,9 @@ public class Misc
      * Class initialization constructor.
      * ================================================
      */
-    public Misc(String hobbies)
+    public Skill(Vector<Lang> langs)
     {
-	m_hobbies= hobbies;
+	m_langs= langs;
 	m_linkedPerson= null;
     }
     
@@ -28,14 +32,18 @@ public class Misc
      * ================================================
      * Class accessors.
      * ================================================
-     */    
-    public String getHobbies()
+     */
+    public Vector<Lang> getLangs()
     {
-	return (m_hobbies);
+	return (m_langs);
     }
-    public void setHobbies(String hobbies)
+    public void setLangs(Vector<Lang> langs)
     {
-	m_hobbies= hobbies;
+	m_langs= langs;
+    }
+    public void addLang(Lang lang)
+    {
+	m_langs.add(lang);
     }
     
     public Person getLinkedPerson()
@@ -47,20 +55,11 @@ public class Misc
 	m_linkedPerson= linkedPerson;
     }
     
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-	return "Misc [m_hobbies=" + m_hobbies + ", m_linkedPerson=" + m_linkedPerson + "]";
-    }
-    
     /**
      * ================================================
      * Class members.
      * ================================================
      */
-    private String m_hobbies;
+    private Vector<Lang> m_langs;
     private Person m_linkedPerson;
 }

@@ -31,8 +31,8 @@ public class Test
 	MiscPersistance miscper= new MiscPersistance();
 	Misc misc= (Misc) miscper.load( prs.getID() );
 	
-	HTMLResumeGenerator gen= new HTMLResumeGenerator(ResumeLang.RL_US, prs, educations, experiences, misc);
-	gen.createIndexHTML();
+	/*HTMLResumeGenerator gen= new HTMLResumeGenerator(ResumeLang.RL_US, prs, educations, experiences, misc);
+	gen.createIndexHTML();*/
 	
 	SQLiteManager.release();
     }

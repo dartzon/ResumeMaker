@@ -46,8 +46,7 @@ public class ExperiencePersistance extends DBPersistance
     
     public Object load(int ID)
     {
-	final String stmt= "SELECT COMPANY, DATE_START, DATE_END, NB_WEEKS, E.WEBSITE, TITLE, DETAIL,"
-		+ "IS_CURRENT "+
+	final String stmt= "SELECT COMPANY, DATE_START, DATE_END, NB_WEEKS, E.WEBSITE, TITLE, DETAIL, IS_CURRENT "+
 		     "FROM PERSON P, EXPERIENCE E "+
 		     "WHERE P.ID = E.PERSON_ID AND P.ID= "+ ID;
 	
