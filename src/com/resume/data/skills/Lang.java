@@ -9,7 +9,7 @@ public class Lang
      */
     public Lang()
     {
-	m_name= "";
+	m_ID= 0;
 	m_level= 0;
     }
 
@@ -18,9 +18,9 @@ public class Lang
      * Class initialization constructor.
      * ================================================
      */
-    public Lang(String name, int level)
+    public Lang(int ID, int level)
     {
-	m_name= name;
+	m_ID= ID;
 	setLevel(level);
     }
     
@@ -29,13 +29,13 @@ public class Lang
      * Class accessors.
      * ================================================
      */
-    public String getName()
+    public int getID()
     {
-	return (m_name);
+	return (m_ID);
     }
-    public void setName(String name)
+    public void setID(int ID)
     {
-	m_name= name;
+	m_ID= ID;
     }
     
     public int getLevel()
@@ -55,6 +55,6 @@ public class Lang
      * Class members.
      * ================================================
      */
-    private String m_name;
+    private int m_ID;
     private int m_level;
 }

@@ -44,8 +44,8 @@ public class LangPersistance extends DBPersistance
 
     public Object load(int ID)
     {
-	final String stmt= "SELECT L.NAME, S.LVL FROM SPOKENLANG S, LANG L, PERSON P "
-		+ "WHERE S.ID_PERSON=P.ID AND S.ID_LANG=L.ID A, ID_PERSON = "+ ID;
+	final String stmt= "SELECT L.ID, S.LVL FROM SPOKENLANG S, LANG L, PERSON P "
+		+ "WHERE S.ID_PERSON=P.ID AND S.ID_LANG=L.ID AND ID_PERSON = "+ ID;
 	
 	System.out.println(stmt);
 
@@ -63,10 +63,10 @@ public class LangPersistance extends DBPersistance
 	    while( sqlStmt.step() == true )
 	    {
 		int colIdx= 0;
-		final String name= sqlStmt.columnString(colIdx++);
+		final int langID= sqlStmt.columnInt(colIdx++);
 		final int level= sqlStmt.columnInt(colIdx++);
 		
-		langs.add(new Lang(name, level));
+		langs.add(new Lang(langID, level));
 	    }
 	}
 	catch (SQLiteException e)

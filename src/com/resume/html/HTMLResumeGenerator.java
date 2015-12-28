@@ -15,33 +15,34 @@ import com.resume.data.Experience;
 import com.resume.data.Misc;
 import com.resume.data.Person;
 import com.resume.data.Skill;
+import com.resume.data.skills.Lang;
 
 public class HTMLResumeGenerator
 {   
     public HTMLResumeGenerator(Person person,
 	    Vector<Education> educations, Vector<Experience> experiences,
-	    Misc misc, Skill skills)
+	    Skill skills, Misc misc)
     {
 	m_ResumeLang= ResumeLang.RL_US;
 	
 	m_person= person;
 	m_educations= educations;
 	m_experiences= experiences;
-	m_misc= misc;
 	m_skills= skills;
+	m_misc= misc;
     }
     
     public HTMLResumeGenerator(ResumeLang lang,
 	    Person person, Vector<Education> educations, Vector<Experience> experiences,
-	    Misc misc, Skill skills)
+	    Skill skills, Misc misc)
     {
 	m_ResumeLang= lang;
 	
 	m_person= person;
 	m_educations= educations;
 	m_experiences= experiences;
-	m_misc= misc;
 	m_skills= skills;
+	m_misc= misc;
     }
     
     // ================================================================================
@@ -122,7 +123,7 @@ public class HTMLResumeGenerator
 	    
 	    /*
 	     * ========================================================================
-	     * Education Section.
+	     * Skills Section.
 	     * ========================================================================
 	     */
 	    
@@ -130,6 +131,7 @@ public class HTMLResumeGenerator
 	    htmlContent+= "<div class=\"SectionTitle\"> <span>"+ m_i18nRsc.getString("skill")+
 		    	  "</span> </div>";
 	    
+	    htmlContent+= processSkillsHTML();
 	    
 	    htmlContent+= "</div>";
 	    
@@ -145,6 +147,16 @@ public class HTMLResumeGenerator
 	    // ========================================================================
 	    
 	    htmlContent+= "</div> </body> </html>";
+	    
+	    /*
+	     * ========================================================================
+	     * Level java script.
+	     * ========================================================================
+	     */
+	    htmlContent+= processLevelScriptHTML();
+	    
+	    // ========================================================================
+
 	    
 	    File presentationFile= new File("data/HTMLResume/index.html");
 	    BufferedWriter writer= new BufferedWriter( new FileWriter(presentationFile) );
@@ -437,9 +449,16 @@ public class HTMLResumeGenerator
     // ================================================================================
     // ================================================================================
     
+    private StringBuilder processSkillsHTML() throws IOException
+    {
+	StringBuilder originalBuffer= processLangsHTML();//new StringBuilder();
+	
+	return (originalBuffer);
+    }
+    
     private StringBuilder processLangsHTML() throws IOException
     {
-	/*File presentationFile= new File("data/HTMLResume/HTMLParts/skills/langs.html");
+	File presentationFile= new File("data/HTMLResume/HTMLParts/skills/langs.html");
 	
 	if(presentationFile.exists() == false)
 	{
@@ -451,20 +470,33 @@ public class HTMLResumeGenerator
 	String line;
 	while((line = reader.readLine()) != null)
 	{
+	    line = line.replaceAll("\\$I18NLANGS\\$", m_i18nRsc.getString("lang"));
+	    
+	    if(line.contains("$LANGSLIST$") == true)
+	    {
+		///////////////////////////////////
+		
+		line= "";
+		
+		final Vector<Lang> langs= m_skills.getLangs();
+		final int langsCount= langs.size();
+		for(int idx= 0; idx< langsCount; ++idx)
+		{
+		    Lang currentLang= langs.elementAt(idx);
+		    
+		    line+= "<div class=\"Item\">";
+		    line+= "<div class=\"ItemCaption\">"+ m_i18nRsc.getString("lang_" + currentLang.getID());
+		    line+= "</div><div class=\"ItemRank\" id=\""+ currentLang.getLevel() +"_1\"></div></div>";
+		}
+		
+		///////////////////////////////////
+	    }
 	    originalBuffer.append(line);
 	}
 	
 	reader.close();
-	
-	final vector<Lang> m_skills= m_skills.getLangs();
-	final int langsCount= m_experiences.size();
-	StringBuilder output[]= new StringBuilder[experiencesCount];
-	for(int idx= 0; idx< experiencesCount; ++idx)
-	{
-	    
-	}*/
 
-	return (null);
+	return (originalBuffer);
     }
     
     // ================================================================================
@@ -502,14 +534,41 @@ public class HTMLResumeGenerator
     // ================================================================================
     // ================================================================================
     
+    private StringBuilder processLevelScriptHTML() throws IOException
+    {
+	File presentationFile= new File("data/HTMLResume/HTMLParts/levelscript.html");
+	
+	if(presentationFile.exists() == false)
+	{
+	    return (null);
+	}
+	
+	BufferedReader reader= new BufferedReader( new FileReader( presentationFile ) );
+	
+	StringBuilder buffer= new StringBuilder((int) presentationFile.length());
+	
+	String line;
+	while( (line= reader.readLine()) != null )
+	{
+	    buffer.append(line);
+	}
+	
+	reader.close();
+
+	return (buffer);
+    }
+    
+    // ================================================================================
+    // ================================================================================
+    
     private Person m_person;
     private Vector<Education> m_educations;
     private Vector<Experience> m_experiences;
     private Misc m_misc;
+    private Skill m_skills;
     
     // i18n Management.
-    ResumeLang m_ResumeLang;
-    Locale m_i18nLocale;
-    ResourceBundle m_i18nRsc;
-    Skill m_skills;
+    private ResumeLang m_ResumeLang; 
+    private Locale m_i18nLocale;
+    private ResourceBundle m_i18nRsc;
 }
