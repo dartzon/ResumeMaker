@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.resume.data.Education;
 import com.resume.data.Experience;
+import com.resume.data.GlobalConfig;
 import com.resume.data.Misc;
 import com.resume.data.Person;
 import com.resume.data.Skill;
@@ -12,6 +13,7 @@ import com.resume.html.HTMLResumeGenerator;
 import com.resume.html.ResumeLang;
 import com.resume.persistance.EducationPersistance;
 import com.resume.persistance.ExperiencePersistance;
+import com.resume.persistance.GlobalConfigPersistance;
 import com.resume.persistance.LangPersistance;
 import com.resume.persistance.MiscPersistance;
 import com.resume.persistance.PersonPersistance;
@@ -24,6 +26,9 @@ public class Test
     {
 	PersonPersistance prsper= new PersonPersistance();
 	Person prs= (Person) prsper.load(1);
+	
+	GlobalConfigPersistance gcper= new GlobalConfigPersistance();
+	GlobalConfig gc= (GlobalConfig) gcper.load( prs.getID() );
 	
 	EducationPersistance eduper= new EducationPersistance();
 	Vector<Education> educations= (Vector<Education>) eduper.load( prs.getID() );
@@ -38,7 +43,8 @@ public class Test
 	MiscPersistance miscper= new MiscPersistance();
 	Misc misc= (Misc) miscper.load( prs.getID() );
 	
-	HTMLResumeGenerator gen= new HTMLResumeGenerator(ResumeLang.RL_US, prs, educations, experiences, skl, misc);
+	HTMLResumeGenerator gen= new HTMLResumeGenerator(ResumeLang.RL_US, prs, gc,
+		educations, experiences, skl, misc);
 	gen.createIndexHTML();
 	
 	SQLiteManager.release();

@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import com.resume.data.Education;
 import com.resume.data.Experience;
+import com.resume.data.GlobalConfig;
 import com.resume.data.Misc;
 import com.resume.data.Person;
 import com.resume.data.Skill;
@@ -19,13 +20,15 @@ import com.resume.data.skills.Lang;
 
 public class HTMLResumeGenerator
 {   
-    public HTMLResumeGenerator(Person person,
+    public HTMLResumeGenerator(Person person, GlobalConfig config,
 	    Vector<Education> educations, Vector<Experience> experiences,
 	    Skill skills, Misc misc)
     {
 	m_ResumeLang= ResumeLang.RL_US;
 	
 	m_person= person;
+	
+	m_config= config;
 	m_educations= educations;
 	m_experiences= experiences;
 	m_skills= skills;
@@ -33,12 +36,14 @@ public class HTMLResumeGenerator
     }
     
     public HTMLResumeGenerator(ResumeLang lang,
-	    Person person, Vector<Education> educations, Vector<Experience> experiences,
+	    Person person, GlobalConfig config, Vector<Education> educations, Vector<Experience> experiences,
 	    Skill skills, Misc misc)
     {
 	m_ResumeLang= lang;
 	
 	m_person= person;
+	
+	m_config= config;
 	m_educations= educations;
 	m_experiences= experiences;
 	m_skills= skills;
@@ -222,6 +227,8 @@ public class HTMLResumeGenerator
 	{
 	    line= line.replaceAll("\\$FIRSTNAME\\$", m_person.getFirstName());
 	    line= line.replaceAll("\\$LASTNAME\\$", m_person.getLastName());
+	    
+	    line= line.replaceAll("\\$PROFILETITLE\\$", m_config.getProfileTitle());
 	    
 	    buffer.append(line);
 	}
@@ -562,6 +569,8 @@ public class HTMLResumeGenerator
     // ================================================================================
     
     private Person m_person;
+    
+    private GlobalConfig m_config;
     private Vector<Education> m_educations;
     private Vector<Experience> m_experiences;
     private Misc m_misc;
